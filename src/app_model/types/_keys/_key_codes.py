@@ -619,9 +619,7 @@ class KeyMod(IntFlag):
     def __or__(self, other: object) -> int:  # type: ignore [override]
         if isinstance(other, self.__class__):
             return self.__class__(self._value_ | other._value_)
-        if isinstance(other, KeyCode):
-            return KeyCombo(self, other)
-        return NotImplemented  # pragma: no cover
+        return KeyCombo(self, other) if isinstance(other, KeyCode) else NotImplemented
 
 
 class KeyCombo(int):

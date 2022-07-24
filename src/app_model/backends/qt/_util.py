@@ -14,6 +14,4 @@ def to_qicon(icon: Icon, theme: Literal["dark", "light"] = "dark") -> QIcon:
     """Create QIcon from Icon."""
     from superqt import fonticon
 
-    if icn := getattr(icon, theme, ""):
-        return fonticon.icon(icn)
-    return QIcon()  # pragma: no cover
+    return fonticon.icon(icn) if (icn := getattr(icon, theme, "")) else QIcon()

@@ -48,10 +48,7 @@ class MainWindow(QMainWindow):
 
     def save_as(self):
         fileName, filtr = QFileDialog.getSaveFileName(self)
-        if fileName:
-            return self.save_file(fileName)
-
-        return False
+        return self.save_file(fileName) if fileName else False
 
     def about(self):
         QMessageBox.about(

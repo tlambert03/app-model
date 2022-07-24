@@ -192,9 +192,7 @@ class KeyBinding(BaseModel):
             )
         os = OperatingSystem.current() if os is None else os
         parts = [part.to_int(os) for part in self.parts]
-        if len(parts) == 2:
-            return KeyChord(*parts)
-        return parts[0]
+        return KeyChord(*parts) if len(parts) == 2 else parts[0]
 
     def __int__(self) -> int:
         return int(self.to_int())

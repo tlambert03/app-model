@@ -53,9 +53,7 @@ class KeyBindingRule(_StrictModel):
             return self.win
         if _MAC and self.mac:
             return self.mac
-        if _LINUX and self.linux:
-            return self.linux
-        return self.primary
+        return self.linux if _LINUX and self.linux else self.primary
 
     @classmethod
     def validate(cls, value: Any) -> "KeyBindingRule":
