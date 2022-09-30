@@ -1,7 +1,7 @@
 import re
 from typing import Any, Callable, Dict, Generator, List, Optional, Tuple
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 from .._constants import OperatingSystem
 from ._key_codes import KeyChord, KeyCode, KeyMod
@@ -136,7 +136,12 @@ class KeyBinding(BaseModel):
     the two keypress codes with a space. For example, 'Ctrl+K Ctrl+C'.
     """
 
-    parts: List[SimpleKeyBinding] = Field(..., min_items=1)
+    __root__: str
+
+    @property
+    def parts(self) -> List[SimpleKeyBinding]:
+        # could cache this and make keybinding immutable
+        return [SimpleKeyBinding.from_str(part) for part in self.__root__.split()]
 
     def __str__(self) -> str:
         return " ".join(str(part) for part in self.parts)
@@ -163,8 +168,7 @@ class KeyBinding(BaseModel):
     @classmethod
     def from_str(cls, key_str: str) -> "KeyBinding":
         """Parse a string into a SimpleKeyBinding."""
-        parts = [SimpleKeyBinding.from_str(part) for part in key_str.split()]
-        return cls(parts=parts)
+        return cls(__root__=key_str)
 
     @classmethod
     def from_int(
@@ -176,14 +180,11 @@ class KeyBinding(BaseModel):
         # the second_part in the next 16 bits, etc.
         first_part = key_int & 0x0000FFFF
         chord_part = (key_int & 0xFFFF0000) >> 16
+
+        root = str(SimpleKeyBinding.from_int(first_part, os))
         if chord_part != 0:
-            return cls(
-                parts=[
-                    SimpleKeyBinding.from_int(first_part, os),
-                    SimpleKeyBinding.from_int(chord_part, os),
-                ]
-            )
-        return cls(parts=[SimpleKeyBinding.from_int(first_part, os)])
+            root += f" {SimpleKeyBinding.from_int(chord_part, os)}"
+        return cls(__root__=root)
 
     def to_int(self, os: Optional[OperatingSystem] = None) -> int:
         """Convert this SimpleKeyBinding to an integer representation."""
@@ -213,7 +214,7 @@ class KeyBinding(BaseModel):
         if isinstance(v, KeyBinding):
             return v
         if isinstance(v, SimpleKeyBinding):
-            return cls(parts=[v])
+            return cls(__root__=str(v))
         if isinstance(v, int):
             return cls.from_int(v)
         if isinstance(v, str):

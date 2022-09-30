@@ -1,4 +1,5 @@
 import sys
+from typing import Dict, List
 
 import pytest
 from pydantic import BaseModel
@@ -60,10 +61,10 @@ def test_simple_keybinding_multi_mod():
 
 
 def test_chord_keybinding():
-    kb = KeyBinding.from_str("Shift+A Cmd+9")
+    kb = KeyBinding.from_str("Shift+A Meta+9")
     assert len(kb) == 2
-    assert kb == "Shift+A Cmd+9"
-    assert kb == KeyBinding.from_str("Shift+A Cmd+9")
+    assert kb == "Shift+A Meta+9"
+    assert kb == KeyBinding.from_str("Shift+A Meta+9")
     assert kb.part0 == SimpleKeyBinding(shift=True, key=KeyCode.KeyA)
     assert kb.part0 == "Shift+A"
 
@@ -108,7 +109,18 @@ def test_in_model():
             json_encoders = {KeyBinding: str}
 
     m = M(key="Shift+A B")
-    assert m.json(models_as_dict=False) == '{"key": "Shift+A B"}'
+    assert m.json() == '{"key": "Shift+A B"}'
+
+
+def test_in_nested_model():
+    class M(BaseModel):
+        keybinds: Dict[str, List[KeyBinding]]
+
+    class N(BaseModel):
+        m: M
+
+    n = N(m=M(keybinds={"abc": ["Shift+A B", "Shift+C D"]}))
+    assert n.json() == '{"m": {"keybinds": {"abc": ["Shift+A B", "Shift+C D"]}}}'
 
 
 def test_standard_keybindings():
