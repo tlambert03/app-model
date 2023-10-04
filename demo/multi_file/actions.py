@@ -19,7 +19,7 @@ ACTIONS: List[Action] = [
     Action(
         id=CommandId.CLOSE,
         title="Close",
-        icon=FA6S.window_close,
+        icon=FA6S.rectangle_xmark,
         callback=functions.close,
         menus=[MenuRule(id=MenuId.FILE)],
         keybindings=[KeyBindingRule(primary=KeyMod.CtrlCmd | KeyCode.KeyW)],
@@ -27,7 +27,7 @@ ACTIONS: List[Action] = [
     Action(
         id=CommandId.UNDO,
         title="Undo",
-        icon=FA6S.undo,
+        icon=FA6S.rotate_left,
         callback=functions.undo,
         menus=[MenuRule(id=MenuId.EDIT, group="1_undo_redo")],
         keybindings=[KeyBindingRule(primary=KeyMod.CtrlCmd | KeyCode.KeyZ)],
@@ -45,7 +45,7 @@ ACTIONS: List[Action] = [
     Action(
         id=CommandId.CUT,
         title="Cut",
-        icon=FA6S.cut,
+        icon=FA6S.scissors,
         callback=functions.cut,
         menus=[MenuRule(id=MenuId.EDIT, group="3_copypaste")],
         keybindings=[KeyBindingRule(primary=KeyMod.CtrlCmd | KeyCode.KeyX)],
