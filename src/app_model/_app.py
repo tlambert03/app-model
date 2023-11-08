@@ -3,17 +3,7 @@ from __future__ import annotations
 import contextlib
 import os
 import sys
-from typing import (
-    TYPE_CHECKING,
-    ClassVar,
-    Dict,
-    Iterable,
-    List,
-    MutableMapping,
-    Optional,
-    Tuple,
-    Type,
-)
+from typing import TYPE_CHECKING, ClassVar, Iterable, MutableMapping
 
 import in_n_out as ino
 from psygnal import Signal
@@ -46,13 +36,13 @@ class Application:
         by default False. This is settable after instantiation, and can also be
         controlled per execution by calling `result.result()` on the future object
         returned from the `execute_command` method.
-    commands_reg_class : Type[CommandsRegistry]
+    commands_reg_class : type[CommandsRegistry]
         (Optionally) override the class to use when creating the CommandsRegistry
-    menus_reg_class : Type[MenusRegistry]
+    menus_reg_class : type[MenusRegistry]
         (Optionally) override the class to use when creating the MenusRegistry
-    keybindings_reg_class : Type[KeyBindingsRegistry]
+    keybindings_reg_class : type[KeyBindingsRegistry]
         (Optionally) override the class to use when creating the KeyBindingsRegistry
-    injection_store_class : Type[ino.Store]
+    injection_store_class : type[ino.Store]
         (Optionally) override the class to use when creating the injection Store
     context : Context | MutableMapping | None
         (Optionally) provide a context to use for this application. If a
@@ -74,17 +64,17 @@ class Application:
     """
 
     destroyed = Signal(str)
-    _instances: ClassVar[Dict[str, Application]] = {}
+    _instances: ClassVar[dict[str, Application]] = {}
 
     def __init__(
         self,
         name: str,
         *,
         raise_synchronous_exceptions: bool = False,
-        commands_reg_class: Type[CommandsRegistry] = CommandsRegistry,
-        menus_reg_class: Type[MenusRegistry] = MenusRegistry,
-        keybindings_reg_class: Type[KeyBindingsRegistry] = KeyBindingsRegistry,
-        injection_store_class: Type[ino.Store] = ino.Store,
+        commands_reg_class: type[CommandsRegistry] = CommandsRegistry,
+        menus_reg_class: type[MenusRegistry] = MenusRegistry,
+        keybindings_reg_class: type[KeyBindingsRegistry] = KeyBindingsRegistry,
+        injection_store_class: type[ino.Store] = ino.Store,
         context: Context | MutableMapping | None = None,
     ) -> None:
         self._name = name
@@ -120,7 +110,7 @@ class Application:
 
         self.injection_store.on_unannotated_required_args = "ignore"
 
-        self._disposers: List[Tuple[str, DisposeCallable]] = []
+        self._disposers: list[tuple[str, DisposeCallable]] = []
 
     @property
     def raise_synchronous_exceptions(self) -> bool:
@@ -162,7 +152,7 @@ class Application:
         return cls._instances[name] if name in cls._instances else cls(name)
 
     @classmethod
-    def get_app(cls, name: str) -> Optional[Application]:
+    def get_app(cls, name: str) -> Application | None:
         """Return app named `name` or None if it doesn't exist."""
         return cls._instances.get(name)
 
