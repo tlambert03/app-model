@@ -23,13 +23,13 @@ R = TypeVar("R")
 
 
 class Action(CommandRule, Generic[P, R]):
-    """An Action is a callable object with menu placement, keybindings, and metadata.
+    """An Action represents a callable object with menu placement, keybindings, and metadata.
 
     This is the "complete" representation of a command.  Including a pointer to the
     actual callable object, as well as any additional menu and keybinding rules.
-    Most commands and menu items will be represented by Actions, and registered using
-    `register_action`.
-    """
+    Most commands and menu items will be represented by `Action`, and registered using
+    [`Application.register_action`][app_model.Application.register_action].
+    """  # noqa: E501
 
     callback: Union[Callable[P, R], str] = Field(
         ...,

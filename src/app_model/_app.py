@@ -163,6 +163,12 @@ class Application:
         This will call [`dispose()`][app_model.Application.dispose], destroy the
         injection store, and remove the application from the list of stored
         application names (allowing the name to be reused).
+
+        Parameters
+        ----------
+        name : str
+            The name of the application to destroy.  If the application does not exist,
+            this is a no-op.
         """
         if name not in cls._instances:
             return  # pragma: no cover
@@ -182,7 +188,7 @@ class Application:
     def dispose(self) -> None:
         """Dispose this `Application`.
 
-        This calls all disposers functions (clearing all registries).
+        This clears all registries by calling all disposer functions.
         """
         while self._disposers:
             with contextlib.suppress(Exception):
@@ -195,14 +201,32 @@ class Application:
         including information about where and whether it appears in menus and optional
         keybinding rules.
 
-        This returns a function that may be called to undo the registration of `action`.
+        Parameters
+        ----------
+        action : Action
+            The action to register.
+
+        Returns
+        -------
+        Callable[[], None]
+            A function that may be called with no arguments to undo the registration
+            of `action`.
         """
         return register_action(self, id_or_action=action)
 
     def register_actions(self, actions: Iterable[Action]) -> DisposeCallable:
         """Register multiple [`Action`][app_model.Action] instances with this app.
 
-        Returns a function that may be called to undo the registration of `actions`.
+        Parameters
+        ----------
+        actions : Iterable[Action]
+            An iterable of actions to register.
+
+        Returns
+        -------
+        Callable[[], None]
+            A function that may be called with no arguments to undo the registration
+            of `actions`.
         """
         d = [self.register_action(action) for action in actions]
 
