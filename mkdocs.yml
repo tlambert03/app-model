@@ -9,23 +9,18 @@ repo_url: https://github.com/pyapp-kit/app-model
 
 copyright: Copyright &copy; 2021 - 2023 Talley Lambert
 
-watch:
-  - src
+watch: [src]
 
 nav:
   - index.md
   - getting_started.md
-  # defer to gen-files + literate-nav
-  - API reference: reference/
+  # - API reference:  # added by api
 
 plugins:
   - search
-  - gen-files:
-      scripts:
-        - docs/gen_ref_nav.py
-  - literate-nav:
-      nav_file: SUMMARY.txt
   - autorefs
+  - api-autonav:
+      modules: ['src/app_model']
   - mkdocstrings:
       handlers:
         python:
@@ -43,12 +38,15 @@ plugins:
             heading_level: 1
             inherited_members: true
             merge_init_into_class: true
+            parameter_headings: true
             separate_signature: true
             show_root_heading: true
-            show_root_full_path: false
             show_signature_annotations: true
             show_bases: true
             show_source: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            summary: true
 
 markdown_extensions:
   - tables
