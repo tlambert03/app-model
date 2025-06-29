@@ -5,7 +5,7 @@ from qtpy.QtCore import QFile, QFileInfo, QSaveFile, Qt, QTextStream
 from qtpy.QtWidgets import QApplication, QFileDialog, QMessageBox, QTextEdit
 
 from app_model import Application, types
-from app_model.backends.qt import QModelMainWindow
+from app_model.backends.qt import QModelMainWindow, apply_theme_to_qapp
 from app_model.expressions import create_context
 
 if TYPE_CHECKING:
@@ -257,8 +257,16 @@ if __name__ == "__main__":
     app = Application(name="my_app")
     for action in ACTIONS:
         app.register_action(action)
+
     qapp = QApplication.instance() or QApplication([])
     qapp.setAttribute(Qt.ApplicationAttribute.AA_DontShowIconsInMenus)
+
+    theme = types.get_theme("macos-dark")
+    # MOVE ME
+    theme.extra_icons = {act.id: act.icon for act in app.registered_actions.values()}
+
+    apply_theme_to_qapp(theme)
+
     main_win = MainWindow(app=app)
 
     app.injection_store.register_provider(lambda: main_win, MainWindow)

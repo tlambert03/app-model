@@ -31,6 +31,7 @@ repos:
           - pydantic >2
           - pydantic-compat
           - in-n-out
+          - pyconify
 
   - repo: local
     hooks:

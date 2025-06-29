@@ -11,6 +11,7 @@ from ._qkeymap import (
 )
 from ._qmainwindow import QModelMainWindow
 from ._qmenu import QModelMenu, QModelMenuBar, QModelSubmenu, QModelToolBar
+from ._theme import apply_palette_to_qapp, apply_theme_to_qapp
 from ._util import to_qicon
 
 __all__ = [
@@ -24,6 +25,8 @@ __all__ = [
     "QModelMenuBar",
     "QModelSubmenu",
     "QModelToolBar",
+    "apply_palette_to_qapp",
+    "apply_theme_to_qapp",
     "qkey2modelkey",
     "qkeycombo2modelkey",
     "qkeysequence2modelkeybinding",

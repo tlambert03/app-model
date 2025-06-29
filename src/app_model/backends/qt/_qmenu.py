@@ -91,7 +91,7 @@ class QModelMenu(QMenu):
     ) -> None:
         """Rebuild menu by looking up self._menu_id in menu_registry."""
         _rebuild(
-            menu=self,
+            menu_or_tb=self,
             app=self._app,
             menu_id=self._menu_id,
             include_submenus=include_submenus,
@@ -227,7 +227,7 @@ class QModelToolBar(QToolBar):
     ) -> None:
         """Rebuild toolbar by looking up self._menu_id in menu_registry."""
         _rebuild(
-            menu=self,
+            menu_or_tb=self,
             app=self._app,
             menu_id=self._menu_id,
             include_submenus=include_submenus,
@@ -285,16 +285,16 @@ class QModelMenuBar(QMenuBar):
 
 
 def _rebuild(
-    menu: QMenu | QToolBar,
+    menu_or_tb: QMenu | QToolBar,
     app: Application,
     menu_id: str,
     include_submenus: bool = True,
     exclude: Collection[str] | None = None,
 ) -> None:
     """Rebuild menu by looking up `menu` in `Application`'s menu_registry."""
-    actions = menu.actions()
+    actions = menu_or_tb.actions()
     for action in actions:
-        menu.removeAction(action)
+        menu_or_tb.removeAction(action)
 
     _exclude = exclude or set()
 
@@ -305,16 +305,19 @@ def _rebuild(
         for item in group:
             if isinstance(item, SubmenuItem):
                 if include_submenus:
-                    submenu = QModelSubmenu(item, app, parent=menu)
-                    cast("QMenu", menu).addMenu(submenu)
+                    submenu = QModelSubmenu(item, app, parent=menu_or_tb)
+                    cast("QMenu", menu_or_tb).addMenu(submenu)
             elif item.command.id not in _exclude:
                 # use QApplication instance as parent for actions
                 # because we use action singleton, and actions
                 # are not related to any window.
                 action = QMenuItemAction.create(item, app=app, parent=qapp)
-                menu.addAction(action)
+                menu_or_tb.addAction(action)
+                if isinstance(menu_or_tb, QToolBar):
+                    if btn := menu_or_tb.widgetForAction(action):
+                        btn.setObjectName(f"action-{action._command_id}")
         if n < n_groups - 1:
-            menu.addSeparator()
+            menu_or_tb.addSeparator()
 
 
 def _update_from_context(actions: Iterable[QAction], ctx: Mapping[str, object]) -> None:

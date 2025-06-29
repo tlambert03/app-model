@@ -18,6 +18,7 @@ from ._keys import (
     StandardKeyBinding,
 )
 from ._menu_rule import MenuItem, MenuItemBase, MenuRule, SubmenuItem
+from ._theme import ColorGroup, Palette, Theme, get_available_themes, get_theme
 
 if TYPE_CHECKING:
     from typing import Callable
@@ -37,6 +38,7 @@ if TYPE_CHECKING:
 
 __all__ = [
     "Action",
+    "ColorGroup",
     "CommandRule",
     "Icon",
     "KeyBinding",
@@ -50,9 +52,13 @@ __all__ = [
     "MenuItemBase",
     "MenuRule",
     "OperatingSystem",
+    "Palette",
     "ScanCode",
     "SimpleKeyBinding",
     "StandardKeyBinding",
     "SubmenuItem",
+    "Theme",
     "ToggleRule",
+    "get_available_themes",
+    "get_theme",
 ]
